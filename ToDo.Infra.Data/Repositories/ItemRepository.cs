@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 using ToDo.Domain.Entities;
 using ToDo.Domain.Interface;
 
@@ -81,5 +82,54 @@ namespace ToDo.Infra.Data.Repositories
                 }
             };
         }
+
+        public async Task DeleteAsync(Guid Id)
+        {
+            var count = 0;
+            var query = "delete from Items where id = @Id";
+            var parameter = new { Id = Id };
+            using (var con = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    con.Open();
+                    count = await con.ExecuteAsync(query, parameter);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    con.Close();
+                }
+            };
+        }
+
+        public async Task<Item> getAsync(Guid Id)
+        {
+            Item result;
+            var query = "select * from Items where Id = @Id";
+            var parameter = new { Id = Id };
+            using (var con = new SqlConnection(connectionString))
+            {
+
+                try
+                {
+                    con.Open();
+                    result = await con.QueryFirstOrDefaultAsync<Item>(query, parameter);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    con.Close();
+                }
+                return result;
+            }
+        }
+
     }
 }

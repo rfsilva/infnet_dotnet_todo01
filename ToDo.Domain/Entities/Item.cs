@@ -20,6 +20,12 @@ namespace ToDo.Domain.Entities
             CreatedAt = DateTime.Now;
         }
 
+        public Item(Guid Id, string task)
+        {
+            this.Id = Id;
+            Description = task;
+        }
+
         public Guid Id { get; private set; }
         public string Description { get; private set; }
         public bool Done { get; private set; }
@@ -34,6 +40,9 @@ namespace ToDo.Domain.Entities
         public void MarkAsDone() => Done = true;
         public void MarkAsUndone() => Done = true;
 
-
+        public static implicit operator Item(int v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
